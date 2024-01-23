@@ -5,6 +5,13 @@
 #include <windows.h>
 #include <winioctl.h>
 
+#ifdef __CYGWIN__
+    #include <stdio.h>  // for swprintf
+
+    #undef FF_AUTO_CLOSE_FD
+    #define FF_AUTO_CLOSE_FD FF_AUTO_CLOSE_HANDLE
+#endif
+
 static bool detectPhysicalDisk(const wchar_t* szDevice, FFlist* result, FFPhysicalDiskOptions* options)
 {
     FF_AUTO_CLOSE_FD HANDLE hDevice = CreateFileW(szDevice, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
@@ -200,7 +207,11 @@ const char* ffDetectPhysicalDisk(FFlist* result, FFPhysicalDiskOptions* options)
         wchar_t* pNum = szPhysicalDrive + strlen("\\\\.\\PhysicalDrive");
         for (uint32_t idev = 0; ; ++idev)
         {
+#ifndef __CYGWIN__
             _ultow(idev, pNum, 10);
+#else
+            swprintf(pNum, 32 - strlen("\\\\.\\PhysicalDrive"), L"%u", idev);
+#endif
 
             if (!detectPhysicalDisk(szPhysicalDrive, result, options))
                 break;
@@ -212,7 +223,11 @@ const char* ffDetectPhysicalDisk(FFlist* result, FFPhysicalDiskOptions* options)
         wchar_t* pNum = szCdrom + strlen("\\\\.\\CDROM");
         for (uint32_t idev = 0; ; ++idev)
         {
+#ifndef __CYGWIN__
             _ultow(idev, pNum, 10);
+#else
+            swprintf(pNum, 32 - strlen("\\\\.\\PhysicalDrive"), L"%u", idev);
+#endif
 
             if (!detectPhysicalDisk(szCdrom, result, options))
                 break;
