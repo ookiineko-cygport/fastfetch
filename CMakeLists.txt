@@ -18,7 +18,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES ".*[Ll]inux.*")
     set(LINUX TRUE CACHE BOOL "..." FORCE) # LINUX means GNU/Linux, not just the kernel
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES ".*[Bb][Ss][Dd].*")
     set(BSD TRUE CACHE BOOL "..." FORCE)
-elseif(NOT APPLE AND NOT WIN32)
+elseif(NOT APPLE AND NOT WIN32 AND NOT CYGWIN)
     message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
 
@@ -101,6 +101,12 @@ set(WARNING_FLAGS "-Wall -Wextra -Wconversion -Werror=uninitialized -Werror=retu
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS} -Werror=incompatible-pointer-types -Werror=implicit-function-declaration -Werror=int-conversion")
+
+if(CYGWIN)
+    # XXX: temporary hack to silence warnings
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-char-subscripts")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-char-subscripts")
+endif()
 
 if(WIN32 OR ENABLE_DIRECTX_HEADERS)
     enable_language(CXX)
@@ -666,6 +672,64 @@ elseif(WIN32)
         src/util/windows/wmi.cpp
         src/util/platform/FFPlatform_windows.c
     )
+elseif(CYGWIN)
+    list(APPEND LIBFASTFETCH_SRC
+        src/common/dbus.c
+        src/common/io/io_unix.c
+        src/common/netif/netif_windows.c
+        src/common/networking_linux.c
+        src/common/processing_linux.c
+        src/detection/battery/battery_nosupport.c
+        src/detection/bios/bios_nosupport.c
+        src/detection/bluetooth/bluetooth_nosupport.c
+        src/detection/board/board_nosupport.c
+        src/detection/brightness/brightness_nosupport.c
+        src/detection/chassis/chassis_nosupport.c
+        src/detection/cpu/cpu_linux.c
+        src/detection/cpuusage/cpuusage_linux.c
+        src/detection/cursor/cursor_linux.c
+        src/detection/disk/disk_linux.c
+        src/detection/physicaldisk/physicaldisk_windows.c
+        src/detection/diskio/diskio_windows.c
+        src/detection/displayserver/linux/displayserver_linux.c
+        src/detection/displayserver/linux/wmde.c
+        src/detection/displayserver/linux/xcb.c
+        src/detection/displayserver/linux/xlib.c
+        src/detection/font/font_linux.c
+        src/detection/gpu/gpu_linux.c
+        src/detection/gtk_qt/gtk.c
+        src/detection/host/host_nosupport.c
+        src/detection/icons/icons_linux.c
+        src/detection/libc/libc_cygwin.c
+        src/detection/lm/lm_nosupport.c
+        src/detection/locale/locale_linux.c
+        src/detection/localip/localip_linux.c
+        src/detection/gamepad/gamepad_nosupport.c
+        src/detection/media/media_linux.c
+        src/detection/memory/memory_linux.c
+        src/detection/monitor/monitor_nosupport.c
+        src/detection/netio/netio_windows.c
+        src/detection/opengl/opengl_linux.c
+        src/detection/os/os_linux.c
+        src/detection/packages/packages_linux.c
+        src/detection/poweradapter/poweradapter_nosupport.c
+        src/detection/processes/processes_linux.c
+        src/detection/gtk_qt/qt.c
+        src/detection/sound/sound_linux.c
+        src/detection/swap/swap_linux.c
+        src/detection/terminalfont/terminalfont_linux.c
+        src/detection/terminalshell/terminalshell_linux.c
+        src/detection/terminalsize/terminalsize_linux.c
+        src/detection/theme/theme_linux.c
+        src/detection/uptime/uptime_linux.c
+        src/detection/users/users_linux.c
+        src/detection/wallpaper/wallpaper_linux.c
+        src/detection/wifi/wifi_windows.c
+        src/detection/de/de_linux.c
+        src/detection/wm/wm_nosupport.c
+        src/detection/wmtheme/wmtheme_linux.c
+        src/util/windows/unicode.c
+        src/util/platform/FFPlatform_unix.c)
 endif()
 
 if(ENABLE_DIRECTX_HEADERS)
@@ -950,6 +1014,10 @@ elseif(WIN32)
         PRIVATE "setupapi"
         PRIVATE "hid"
         PRIVATE "wtsapi32"
+    )
+elseif(CYGWIN)
+    target_link_libraries(libfastfetch
+        PRIVATE "iphlpapi"
     )
 elseif(BSD)
     target_link_libraries(libfastfetch
