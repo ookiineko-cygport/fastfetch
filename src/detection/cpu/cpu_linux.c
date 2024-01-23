@@ -84,6 +84,7 @@ static double getFrequency(const char* info, const char* scaling)
 
 static double detectCPUTemp(void)
 {
+#ifndef __CYGWIN__
     const FFlist* tempsResult = ffDetectTemps();
 
     FF_LIST_FOR_EACH(FFTempValue, value, *tempsResult)
@@ -94,6 +95,7 @@ static double detectCPUTemp(void)
             ffStrbufCompS(&value->name, "coretemp") == 0
         ) return value->value;
     }
+#endif
 
     return FF_CPU_TEMP_UNSET;
 }
