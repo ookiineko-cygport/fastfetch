@@ -14,6 +14,13 @@ typedef struct FFOptionsLibrary
 #if defined(__linux__) || defined(__FreeBSD__)
     FFstrbuf libPCI;
     FFstrbuf libWayland;
+    FFstrbuf libGLX;
+    FFstrbuf libnm;
+    FFstrbuf libDdcutil;
+    FFstrbuf libdrm;
+#endif
+
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
     FFstrbuf libXcbRandr;
     FFstrbuf libXcb;
     FFstrbuf libXrandr;
@@ -24,13 +31,9 @@ typedef struct FFOptionsLibrary
     FFstrbuf libXFConf;
     FFstrbuf librpm;
     FFstrbuf libEGL;
-    FFstrbuf libGLX;
     FFstrbuf libOSMesa;
     FFstrbuf libfreetype;
     FFstrbuf libPulse;
-    FFstrbuf libnm;
-    FFstrbuf libDdcutil;
-    FFstrbuf libdrm;
 #endif
 } FFOptionsLibrary;
 

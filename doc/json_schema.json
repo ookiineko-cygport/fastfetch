@@ -262,7 +262,7 @@
                 },
                 "playerName": {
                     "type": "string",
-                    "description": "The name of the player to use for module Media and Player. Linux only"
+                    "description": "The name of the player to use for module Media and Player. Linux and Cygwin only"
                 },
                 "osFile": {
                     "type": "string",
@@ -508,19 +508,19 @@
                 },
                 "xcbRandr": {
                     "type": "string",
-                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD)"
+                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD, Cygwin)"
                 },
                 "xcb": {
                     "type": "string",
-                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD)"
+                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD, Cygwin)"
                 },
                 "xrandr": {
                     "type": "string",
-                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD)"
+                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD, Cygwin)"
                 },
                 "x11": {
                     "type": "string",
-                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD)"
+                    "description": "X11 sessions for better display detection and faster WM detection.\nThe *randr ones provide multi monitor support The libxcb* ones usually have better performance.\n (Linux, FreeBSD, Cygwin)"
                 },
                 "drm": {
                     "type": "string",
@@ -528,43 +528,43 @@
                 },
                 "gio": {
                     "type": "string",
-                    "description": "Needed for values that are only stored GSettings (Linux, FreeBSD)"
+                    "description": "Needed for values that are only stored GSettings (Linux, FreeBSD, Cygwin)"
                 },
                 "dconf": {
                     "type": "string",
-                    "description": "Needed for values that are only stored in DConf + Fallback for GSettings (Linux, FreeBSD)"
+                    "description": "Needed for values that are only stored in DConf + Fallback for GSettings (Linux, FreeBSD, Cygwin)"
                 },
                 "dbus": {
                     "type": "string",
-                    "description": "Bluetooth, Player & Media detection (Linux, FreeBSD)"
+                    "description": "Bluetooth, Player & Media detection (Linux, FreeBSD, Cygwin)"
                 },
                 "xfconf": {
                     "type": "string",
-                    "description": "Needed for XFWM theme and XFCE Terminal font (Linux, FreeBSD)"
+                    "description": "Needed for XFWM theme and XFCE Terminal font (Linux, FreeBSD, Cygwin)"
                 },
                 "sqlite3": {
                     "type": "string",
-                    "description": "Needed for pkg & rpm package count (Linux, FreeBSD)"
+                    "description": "Needed for pkg & rpm package count (Linux, FreeBSD, Cygwin)"
                 },
                 "rpm": {
                     "type": "string",
-                    "description": "Slower fallback for rpm package count. Needed on openSUSE & old CentOS / Redhat. (Linux)"
+                    "description": "Slower fallback for rpm package count. Needed on openSUSE & old CentOS / Redhat. (Linux, Cygwin)"
                 },
                 "imagemagick": {
                     "type": "string",
-                    "description": "Images in terminal using sixel or kitty graphics protocol (Linux, FreeBSD, macOS)"
+                    "description": "Images in terminal using sixel or kitty graphics protocol (Linux, FreeBSD, macOS, Cygwin)"
                 },
                 "z": {
-                    "description": "Libz. Faster image output when using kitty graphics protocol (Linux, FreeBSD, macOS)",
+                    "description": "Libz. Faster image output when using kitty graphics protocol (Linux, FreeBSD, macOS, Cygwin)",
                     "type": "string"
                 },
                 "chafa": {
                     "type": "string",
-                    "description": "Image output as ascii art (Linux, FreeBSD, macOS)"
+                    "description": "Image output as ascii art (Linux, FreeBSD, macOS, Cygwin)"
                 },
                 "egl": {
                     "type": "string",
-                    "description": "Needed by the OpenGL module for gl context creation (Linux, FreeBSD)"
+                    "description": "Needed by the OpenGL module for gl context creation (Linux, FreeBSD, Cygwin)"
                 },
                 "glx": {
                     "type": "string",
@@ -572,14 +572,14 @@
                 },
                 "osmesa": {
                     "type": "string",
-                    "description": "Needed by the OpenGL module for gl context creation (Linux, FreeBSD)"
+                    "description": "Needed by the OpenGL module for gl context creation (Linux, FreeBSD, Cygwin)"
                 },
                 "opencl": {
                     "type": "string",
-                    "description": "OpenCL module (Linux, FreeBSD, Windows)"
+                    "description": "OpenCL module (Linux, FreeBSD, Windows, Cygwin)"
                 },
                 "pulse": {
-                    "description": "Pulseaudio. Used for Sound detection (Linux, FreeBSD)",
+                    "description": "Pulseaudio. Used for Sound detection (Linux, FreeBSD, Cygwin)",
                     "type": "string"
                 },
                 "nm": {
@@ -1405,7 +1405,7 @@
                                         "const": "opengl"
                                     },
                                     "library": {
-                                        "description": "Set the OpenGL context creation library to use. Linux only",
+                                        "description": "Set the OpenGL context creation library to use. Linux and Cygwin only",
                                         "enum": [
                                             "auto",
                                             "egl",

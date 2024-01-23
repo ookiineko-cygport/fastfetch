@@ -28,13 +28,9 @@ const char* ffOptionsParseLibraryJsonConfig(FFOptionsLibrary* options, yyjson_va
         else if (ffStrEqualsIgnCase(key, "z"))
             ffStrbufSetS(&options->libZ, yyjson_get_str(val));
 
-#if defined(__linux__) || defined(__FreeBSD__)
-        else if (ffStrEqualsIgnCase(key, "pci"))
-            ffStrbufSetS(&options->libPCI, yyjson_get_str(val));
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
         else if (ffStrEqualsIgnCase(key, "freetype"))
             ffStrbufSetS(&options->libfreetype, yyjson_get_str(val));
-        else if (ffStrEqualsIgnCase(key, "wayland"))
-            ffStrbufSetS(&options->libWayland, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "xcbRandr"))
             ffStrbufSetS(&options->libXcbRandr, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "xcb"))
@@ -55,12 +51,19 @@ const char* ffOptionsParseLibraryJsonConfig(FFOptionsLibrary* options, yyjson_va
             ffStrbufSetS(&options->librpm, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "egl"))
             ffStrbufSetS(&options->libEGL, yyjson_get_str(val));
-        else if (ffStrEqualsIgnCase(key, "glx"))
-            ffStrbufSetS(&options->libGLX, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "osmesa"))
             ffStrbufSetS(&options->libOSMesa, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "pulse"))
             ffStrbufSetS(&options->libPulse, yyjson_get_str(val));
+#endif
+
+#if defined(__linux__) || defined(__FreeBSD__)
+        else if (ffStrEqualsIgnCase(key, "glx"))
+            ffStrbufSetS(&options->libGLX, yyjson_get_str(val));
+        else if (ffStrEqualsIgnCase(key, "pci"))
+            ffStrbufSetS(&options->libPCI, yyjson_get_str(val));
+        else if (ffStrEqualsIgnCase(key, "wayland"))
+            ffStrbufSetS(&options->libWayland, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "nm"))
             ffStrbufSetS(&options->libnm, yyjson_get_str(val));
         else if (ffStrEqualsIgnCase(key, "ddcutil"))
@@ -94,13 +97,9 @@ bool ffOptionsParseLibraryCommandLine(FFOptionsLibrary* options, const char* key
         else if(ffStrEqualsIgnCase(subkey, "z"))
             ffOptionParseString(key, value, &options->libZ);
 
-#if defined(__linux__) || defined(__FreeBSD__)
-        else if(ffStrEqualsIgnCase(subkey, "PCI"))
-            ffOptionParseString(key, value, &options->libPCI);
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
         else if(ffStrEqualsIgnCase(subkey, "freetype"))
             ffOptionParseString(key, value, &options->libfreetype);
-        else if(ffStrEqualsIgnCase(subkey, "wayland"))
-            ffOptionParseString(key, value, &options->libWayland);
         else if(ffStrEqualsIgnCase(subkey, "xcbRandr"))
             ffOptionParseString(key, value, &options->libXcbRandr);
         else if(ffStrEqualsIgnCase(subkey, "xcb"))
@@ -121,12 +120,19 @@ bool ffOptionsParseLibraryCommandLine(FFOptionsLibrary* options, const char* key
             ffOptionParseString(key, value, &options->librpm);
         else if(ffStrEqualsIgnCase(subkey, "egl"))
             ffOptionParseString(key, value, &options->libEGL);
-        else if(ffStrEqualsIgnCase(subkey, "glx"))
-            ffOptionParseString(key, value, &options->libGLX);
         else if(ffStrEqualsIgnCase(subkey, "osmesa"))
             ffOptionParseString(key, value, &options->libOSMesa);
         else if(ffStrEqualsIgnCase(subkey, "pulse"))
             ffOptionParseString(key, value, &options->libPulse);
+#endif
+
+#if defined(__linux__) || defined(__FreeBSD__)
+        else if(ffStrEqualsIgnCase(subkey, "glx"))
+            ffOptionParseString(key, value, &options->libGLX);
+        else if(ffStrEqualsIgnCase(subkey, "PCI"))
+            ffOptionParseString(key, value, &options->libPCI);
+        else if(ffStrEqualsIgnCase(subkey, "wayland"))
+            ffOptionParseString(key, value, &options->libWayland);
         else if(ffStrEqualsIgnCase(subkey, "nm"))
             ffOptionParseString(key, value, &options->libnm);
         else if(ffStrEqualsIgnCase(subkey, "ddcutil"))
@@ -183,12 +189,6 @@ void ffOptionsGenerateLibraryJsonConfig(FFOptionsLibrary* options, yyjson_mut_do
         yyjson_mut_obj_add_strbuf(doc, obj, "z", &options->libZ);
 
 #if defined(__linux__) || defined(__FreeBSD__)
-    if (!ffStrbufEqual(&options->libPCI, &defaultOptions.libPCI))
-        yyjson_mut_obj_add_strbuf(doc, obj, "PCI", &options->libPCI);
-
-    if (!ffStrbufEqual(&options->libWayland, &defaultOptions.libWayland))
-        yyjson_mut_obj_add_strbuf(doc, obj, "wayland", &options->libWayland);
-
     if (!ffStrbufEqual(&options->libXcbRandr, &defaultOptions.libXcbRandr))
         yyjson_mut_obj_add_strbuf(doc, obj, "xcbRandr", &options->libXcbRandr);
 
@@ -219,14 +219,22 @@ void ffOptionsGenerateLibraryJsonConfig(FFOptionsLibrary* options, yyjson_mut_do
     if (!ffStrbufEqual(&options->libEGL, &defaultOptions.libEGL))
         yyjson_mut_obj_add_strbuf(doc, obj, "egl", &options->libEGL);
 
-    if (!ffStrbufEqual(&options->libGLX, &defaultOptions.libGLX))
-        yyjson_mut_obj_add_strbuf(doc, obj, "glx", &options->libGLX);
-
     if (!ffStrbufEqual(&options->libOSMesa, &defaultOptions.libOSMesa))
         yyjson_mut_obj_add_strbuf(doc, obj, "OSMesa", &options->libOSMesa);
 
     if (!ffStrbufEqual(&options->libPulse, &defaultOptions.libPulse))
         yyjson_mut_obj_add_strbuf(doc, obj, "pulse", &options->libPulse);
+#endif
+
+#if defined(__linux__) || defined(__FreeBSD__)
+    if (!ffStrbufEqual(&options->libGLX, &defaultOptions.libGLX))
+        yyjson_mut_obj_add_strbuf(doc, obj, "glx", &options->libGLX);
+
+    if (!ffStrbufEqual(&options->libPCI, &defaultOptions.libPCI))
+        yyjson_mut_obj_add_strbuf(doc, obj, "PCI", &options->libPCI);
+
+    if (!ffStrbufEqual(&options->libWayland, &defaultOptions.libWayland))
+        yyjson_mut_obj_add_strbuf(doc, obj, "wayland", &options->libWayland);
 
     if (!ffStrbufEqual(&options->libnm, &defaultOptions.libnm))
         yyjson_mut_obj_add_strbuf(doc, obj, "nm", &options->libnm);
