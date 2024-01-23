@@ -3,20 +3,30 @@
 #include "util/FFstrbuf.h"
 #include "util/FFlist.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__CYGWIN__)
     #include <fileapi.h>
     #include <handleapi.h>
     #include <io.h>
-    typedef HANDLE FFNativeFD;
-#else
+#endif
+
+#ifdef __CYGWIN__
+    typedef HANDLE FFNativeHandle;
+#endif
+
+#ifndef _WIN32
     #include <unistd.h>
     #include <dirent.h>
     #include <sys/stat.h>
-    typedef int FFNativeFD;
     // procfs's file can be changed between read calls such as /proc/meminfo and /proc/uptime.
     // one safe way to read correct data is reading the whole file in a single read syscall
     // 8192 comes from procps-ng: https://gitlab.com/procps-ng/procps/-/blob/master/library/meminfo.c?ref_type=heads#L39
     #define PROC_FILE_BUFFSIZ 8192
+#endif
+
+#ifdef _WIN32
+    typedef HANDLE FFNativeFD;
+#else
+    typedef int FFNativeFD;
 #endif
 
 static inline FFNativeFD FFUnixFD2NativeFD(int unixfd)
@@ -137,22 +147,39 @@ static inline void ffUnsuppressIO(bool* suppressed)
 
 void ffListFilesRecursively(const char* path, bool pretty);
 
+#if defined(_WIN32) || defined(__CYGWIN__)
+static inline bool wrapCloseHandle(HANDLE* phandle)
+{
+    // https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
+    if (*phandle == NULL || *phandle == INVALID_HANDLE_VALUE)
+        return false;
+    CloseHandle(*phandle);
+
+    return true;
+}
+#endif
+
+#ifdef __CYGWIN__
+#define FF_AUTO_CLOSE_HANDLE __attribute__((__cleanup__(wrapCloseHandle)))
+#endif
+
+static inline bool wrapCloseFd(int* pfd)
+{
+    if (*pfd < 0)
+        return false;
+    close(*pfd);
+
+    return true;
+}
 static inline bool wrapClose(FFNativeFD* pfd)
 {
     assert(pfd);
 
-    #ifndef WIN32
-        if (*pfd < 0)
-            return false;
-        close(*pfd);
+    #ifndef _WIN32
+        return wrapCloseFd(pfd);
     #else
-        // https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
-        if (*pfd == NULL || *pfd == INVALID_HANDLE_VALUE)
-            return false;
-        CloseHandle(*pfd);
+        return wrapCloseHandle(pfd);
     #endif
-
-    return true;
 }
 #define FF_AUTO_CLOSE_FD __attribute__((__cleanup__(wrapClose)))
 
