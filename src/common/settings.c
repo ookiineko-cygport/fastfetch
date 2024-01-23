@@ -92,7 +92,10 @@ typedef struct GSettingsData
 
 static const GSettingsData* getGSettingsData(void)
 {
-    FF_LIBRARY_DATA_LOAD_INIT(GSettingsData, instance.config.library.libGIO, "libgio-2.0" FF_LIBRARY_EXTENSION, 1);
+    FF_LIBRARY_DATA_LOAD_INIT(GSettingsData, instance.config.library.libGIO,
+        FF_LIBRARY_PREFIX "gio-2.0" FF_LIBRARY_EXTENSION, 1,
+        FF_LIBRARY_PREFIX "gio-2.0-0" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    );
 
     FF_LIBRARY_DATA_LOAD_SYMBOL(g_settings_schema_source_lookup)
     FF_LIBRARY_DATA_LOAD_SYMBOL(g_settings_schema_has_key)
@@ -165,7 +168,10 @@ typedef struct DConfData
 
 static const DConfData* getDConfData(void)
 {
-    FF_LIBRARY_DATA_LOAD_INIT(DConfData, instance.config.library.libDConf, "libdconf" FF_LIBRARY_EXTENSION, 2);
+    FF_LIBRARY_DATA_LOAD_INIT(DConfData, instance.config.library.libDConf,
+        FF_LIBRARY_PREFIX "dconf" FF_LIBRARY_EXTENSION, 2,
+        FF_LIBRARY_PREFIX "dconf-1" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    );
 
     FF_LIBRARY_DATA_LOAD_SYMBOL(dconf_client_read_full)
     FF_LIBRARY_DATA_LOAD_SYMBOL(dconf_client_new)
@@ -236,7 +242,10 @@ typedef struct XFConfData
 
 static const XFConfData* getXFConfData(void)
 {
-    FF_LIBRARY_DATA_LOAD_INIT(XFConfData, instance.config.library.libXFConf, "libxfconf-0" FF_LIBRARY_EXTENSION, 4);
+    FF_LIBRARY_DATA_LOAD_INIT(XFConfData, instance.config.library.libXFConf,
+        FF_LIBRARY_PREFIX "xfconf-0" FF_LIBRARY_EXTENSION, 4,
+        FF_LIBRARY_PREFIX "xfconf-0-2" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    );
 
     FF_LIBRARY_DATA_LOAD_SYMBOL(xfconf_channel_get)
     FF_LIBRARY_DATA_LOAD_SYMBOL(xfconf_channel_has_property)
@@ -298,7 +307,10 @@ typedef struct SQLiteData
 
 static const SQLiteData* getSQLiteData(void)
 {
-    FF_LIBRARY_DATA_LOAD_INIT(SQLiteData, instance.config.library.libSQLite3, "libsqlite3" FF_LIBRARY_EXTENSION, 1);
+    FF_LIBRARY_DATA_LOAD_INIT(SQLiteData, instance.config.library.libSQLite3,
+        FF_LIBRARY_PREFIX "sqlite3" FF_LIBRARY_EXTENSION, 1,
+        FF_LIBRARY_PREFIX "sqlite3-0" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    );
 
     FF_LIBRARY_DATA_LOAD_SYMBOL(sqlite3_open_v2)
     FF_LIBRARY_DATA_LOAD_SYMBOL(sqlite3_prepare_v2)

@@ -217,7 +217,10 @@ static uint32_t getFlatpak(FFstrbuf* baseDir, const char* dirname)
 
 static uint32_t getRpmFromLibrpm(void)
 {
-    FF_LIBRARY_LOAD(rpm, &instance.config.library.librpm, 0, "librpm" FF_LIBRARY_EXTENSION, 12)
+    FF_LIBRARY_LOAD(rpm, &instance.config.library.librpm, 0,
+        FF_LIBRARY_PREFIX "rpm" FF_LIBRARY_EXTENSION, 12,
+        FF_LIBRARY_PREFIX "rpm-9" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    )
     FF_LIBRARY_LOAD_SYMBOL(rpm, rpmReadConfigFiles, 0)
     FF_LIBRARY_LOAD_SYMBOL(rpm, rpmtsCreate, 0)
     FF_LIBRARY_LOAD_SYMBOL(rpm, rpmtsInitIterator, 0)

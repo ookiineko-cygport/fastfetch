@@ -13,7 +13,13 @@
     #include <dlfcn.h>
 #endif
 
-#ifdef _WIN32
+#ifdef __CYGWIN__
+    #define FF_LIBRARY_PREFIX "cyg"
+#else
+    #define FF_LIBRARY_PREFIX "lib"
+#endif
+
+#if defined(_WIN32) || defined(__CYGWIN__)
     #define FF_LIBRARY_EXTENSION ".dll"
 #elif defined(__APPLE__)
     #define FF_LIBRARY_EXTENSION ".dylib"

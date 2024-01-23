@@ -38,7 +38,10 @@ static void paServerInfoCallback(pa_context *c, const pa_server_info *i, void *u
 
 static const char* detectSound(FFlist* devices)
 {
-    FF_LIBRARY_LOAD(pulse, &instance.config.library.libPulse, "Failed to load libpulse" FF_LIBRARY_EXTENSION, "libpulse" FF_LIBRARY_EXTENSION, 0)
+    FF_LIBRARY_LOAD(pulse, &instance.config.library.libPulse, "Failed to load " FF_LIBRARY_PREFIX "pulse" FF_LIBRARY_EXTENSION,
+        FF_LIBRARY_PREFIX "pulse" FF_LIBRARY_EXTENSION, 0,
+        FF_LIBRARY_PREFIX "pulse-0" FF_LIBRARY_EXTENSION, -1 // Required for Cygwin
+    )
     FF_LIBRARY_LOAD_SYMBOL_MESSAGE(pulse, pa_mainloop_new)
     FF_LIBRARY_LOAD_SYMBOL_MESSAGE(pulse, pa_mainloop_get_api)
     FF_LIBRARY_LOAD_SYMBOL_MESSAGE(pulse, pa_mainloop_iterate)
