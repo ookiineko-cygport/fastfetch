@@ -72,6 +72,7 @@ static bool isPhysicalDevice(const struct mntent* device)
     return true;
 }
 
+#ifndef __CYGWIN__
 static void detectNameFromPath(FFDisk* disk, const struct stat* deviceStat, FFstrbuf* basePath)
 {
     FF_AUTO_CLOSE_DIR DIR* dir = opendir(basePath->chars);
@@ -138,6 +139,7 @@ static void detectName(FFDisk* disk)
         }
     }
 }
+#endif
 
 #ifdef __ANDROID__
 
@@ -149,6 +151,18 @@ static void detectType(FF_MAYBE_UNUSED const FFlist* disks, FFDisk* currentDisk)
         currentDisk->type = FF_DISK_VOLUME_TYPE_EXTERNAL_BIT;
     else
         currentDisk->type = FF_DISK_VOLUME_TYPE_HIDDEN_BIT;
+}
+
+#elif defined(__CYGWIN__)
+
+static void detectType(FF_MAYBE_UNUSED const FFlist* disks, FFDisk* currentDisk)
+{
+    if(ffStrbufEqualS(&currentDisk->mountpoint, "/usr/bin") ||
+       ffStrbufEqualS(&currentDisk->mountpoint, "/usr/lib") ||
+       ffStrbufStartsWithS(&currentDisk->mountpoint, "/cygdrive"))
+        currentDisk->type = FF_DISK_VOLUME_TYPE_HIDDEN_BIT;
+    else
+        currentDisk->type = FF_DISK_VOLUME_TYPE_REGULAR_BIT;
 }
 
 #else
@@ -267,7 +281,9 @@ const char* ffDetectDisksImpl(FFlist* disks)
 
         //detect name
         ffStrbufInit(&disk->name);
+#ifndef __CYGWIN__
         detectName(disk); // Also detects external devices
+#endif
 
         //detect type
         detectType(disks, disk);
