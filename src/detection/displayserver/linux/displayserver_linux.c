@@ -6,6 +6,7 @@
 
 void ffConnectDisplayServerImpl(FFDisplayServerResult* ds)
 {
+    #ifndef __CYGWIN__
     if (instance.config.general.dsForceDrm == FF_DS_FORCE_DRM_TYPE_FALSE)
     {
         //We try wayland as our preferred display server, as it supports the most features.
@@ -33,6 +34,7 @@ void ffConnectDisplayServerImpl(FFDisplayServerResult* ds)
     //Use it if all connections failed
     if(ds->displays.length == 0)
         ffdsConnectDrm(ds);
+    #endif
 
     #ifdef __FreeBSD__
     if(ds->displays.length == 0)
