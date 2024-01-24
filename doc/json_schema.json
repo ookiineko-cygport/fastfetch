@@ -266,7 +266,7 @@
                 },
                 "osFile": {
                     "type": "string",
-                    "description": "Set the path to the file containing OS information. Linux only"
+                    "description": "Set the path to the file containing OS information. Linux and Cygwin only"
                 },
                 "dsForceDrm": {
                     "description": "Force display detection to use DRM. Linux only",

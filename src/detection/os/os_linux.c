@@ -140,6 +140,7 @@ static void detectOS(FFOSResult* os)
         return;
     }
 
+#ifndef __CYGWIN__
     if(instance.config.general.escapeBedrock && parseFile(FASTFETCH_TARGET_DIR_ROOT"/bedrock"FASTFETCH_TARGET_DIR_ETC"/bedrock-release", os))
     {
         if(os->id.length == 0)
@@ -153,6 +154,7 @@ static void detectOS(FFOSResult* os)
 
         return;
     }
+#endif
 
     parseFile(FASTFETCH_TARGET_DIR_ETC"/os-release", os);
     if(allRelevantValuesSet(os))
@@ -163,6 +165,15 @@ static void detectOS(FFOSResult* os)
         return;
 
     parseFile(FASTFETCH_TARGET_DIR_ETC"/lsb-release", os);
+    if(allRelevantValuesSet(os))
+        return;
+
+    if(ffPathExists("/usr/bin/cygwin1.dll", FF_PATHTYPE_FILE))
+    {
+        ffStrbufSetS(&os->name, "Cygwin");
+        ffStrbufSetS(&os->prettyName, "Cygwin");
+        ffStrbufSetS(&os->id, "cygwin");
+    }
 }
 
 void ffDetectOSImpl(FFOSResult* os)

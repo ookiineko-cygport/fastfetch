@@ -22,13 +22,15 @@ const char* ffOptionsParseGeneralJsonConfig(FFOptionsGeneral* options, yyjson_va
         else if (ffStrEqualsIgnCase(key, "processingTimeout"))
             options->processingTimeout = (int32_t) yyjson_get_int(val);
 
-        #if defined(__linux__) || defined(__FreeBSD__)
-        else if (ffStrEqualsIgnCase(key, "escapeBedrock"))
-            options->escapeBedrock = yyjson_get_bool(val);
-        else if (ffStrEqualsIgnCase(key, "playerName"))
-            ffStrbufSetS(&options->playerName, yyjson_get_str(val));
+        #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
         else if (ffStrEqualsIgnCase(key, "osFile"))
             ffStrbufSetS(&options->osFile, yyjson_get_str(val));
+        #endif
+        #if defined(__linux__) || defined(__FreeBSD__)
+        else if (ffStrEqualsIgnCase(key, "playerName"))
+            ffStrbufSetS(&options->playerName, yyjson_get_str(val));
+        else if (ffStrEqualsIgnCase(key, "escapeBedrock"))
+            options->escapeBedrock = yyjson_get_bool(val);
         else if (ffStrEqualsIgnCase(key, "dsForceDrm"))
         {
             if (yyjson_is_str(val))
@@ -74,13 +76,15 @@ bool ffOptionsParseGeneralCommandLine(FFOptionsGeneral* options, const char* key
     else if(ffStrEqualsIgnCase(key, "--processing-timeout"))
         options->processingTimeout = ffOptionParseInt32(key, value);
 
-    #if defined(__linux__) || defined(__FreeBSD__)
-    else if(ffStrEqualsIgnCase(key, "--escape-bedrock"))
-        options->escapeBedrock = ffOptionParseBoolean(value);
-    else if(ffStrEqualsIgnCase(key, "--player-name"))
-        ffOptionParseString(key, value, &options->playerName);
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
     else if (ffStrEqualsIgnCase(key, "--os-file"))
         ffOptionParseString(key, value, &options->osFile);
+    #endif
+    #if defined(__linux__) || defined(__FreeBSD__)
+    else if(ffStrEqualsIgnCase(key, "--player-name"))
+        ffOptionParseString(key, value, &options->playerName);
+    else if(ffStrEqualsIgnCase(key, "--escape-bedrock"))
+        options->escapeBedrock = ffOptionParseBoolean(value);
     else if(ffStrEqualsIgnCase(key, "--ds-force-drm"))
     {
         if (ffOptionParseBoolean(value))
@@ -106,10 +110,12 @@ void ffOptionsInitGeneral(FFOptionsGeneral* options)
     options->processingTimeout = 1000;
     options->multithreading = true;
 
-    #if defined(__linux__) || defined(__FreeBSD__)
-    options->escapeBedrock = true;
-    ffStrbufInit(&options->playerName);
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
     ffStrbufInit(&options->osFile);
+    #endif
+    #if defined(__linux__) || defined(__FreeBSD__)
+    ffStrbufInit(&options->playerName);
+    options->escapeBedrock = true;
     options->dsForceDrm = FF_DS_FORCE_DRM_TYPE_FALSE;
     #elif defined(_WIN32)
     options->wmiTimeout = 5000;
@@ -118,9 +124,11 @@ void ffOptionsInitGeneral(FFOptionsGeneral* options)
 
 void ffOptionsDestroyGeneral(FF_MAYBE_UNUSED FFOptionsGeneral* options)
 {
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
+    ffStrbufDestroy(&options->osFile);
+    #endif
     #if defined(__linux__) || defined(__FreeBSD__)
     ffStrbufDestroy(&options->playerName);
-    ffStrbufDestroy(&options->osFile);
     #endif
 }
 
@@ -137,16 +145,20 @@ void ffOptionsGenerateGeneralJsonConfig(FFOptionsGeneral* options, yyjson_mut_do
     if (options->processingTimeout != defaultOptions.processingTimeout)
         yyjson_mut_obj_add_int(doc, obj, "processingTimeout", options->processingTimeout);
 
-    #if defined(__linux__) || defined(__FreeBSD__)
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
 
-    if (options->escapeBedrock != defaultOptions.escapeBedrock)
-        yyjson_mut_obj_add_bool(doc, obj, "escapeBedrock", options->escapeBedrock);
+    if (!ffStrbufEqual(&options->osFile, &defaultOptions.osFile))
+        yyjson_mut_obj_add_strbuf(doc, obj, "osFile", &options->osFile);
+
+    #endif
+
+    #if defined(__linux__) || defined(__FreeBSD__)
 
     if (!ffStrbufEqual(&options->playerName, &defaultOptions.playerName))
         yyjson_mut_obj_add_strbuf(doc, obj, "playerName", &options->playerName);
 
-    if (!ffStrbufEqual(&options->osFile, &defaultOptions.osFile))
-        yyjson_mut_obj_add_strbuf(doc, obj, "osFile", &options->osFile);
+    if (options->escapeBedrock != defaultOptions.escapeBedrock)
+        yyjson_mut_obj_add_bool(doc, obj, "escapeBedrock", options->escapeBedrock);
 
     if (options->dsForceDrm != defaultOptions.dsForceDrm)
     {
