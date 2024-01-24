@@ -40,7 +40,14 @@ static const char* parseCpuInfo(FFCPUResult* cpu, FFstrbuf* physicalCoresBuffer,
         if(*line == '\0' || *line == '\n')
             break;
 
+        #ifdef __CYGWIN__
+        FF_STRBUF_AUTO_DESTROY proc = ffStrbufCreate();
+        #endif
+
         (void)(
+            #ifdef __CYGWIN__
+            ffParsePropLine(line, "processor :", &proc) ||
+            #endif
             ffParsePropLine(line, "model name :", &cpu->name) ||
             ffParsePropLine(line, "vendor_id :", &cpu->vendor) ||
             ffParsePropLine(line, "cpu cores :", physicalCoresBuffer) ||
@@ -51,6 +58,20 @@ static const char* parseCpuInfo(FFCPUResult* cpu, FFstrbuf* physicalCoresBuffer,
             (cpu->name.length == 0 && ffParsePropLine(line, "cpu     :", &cpu->name)) || //For POWER
             (cpu->name.length == 0 && ffParsePropLine(line, "cpu model               :", &cpu->name)) //For MIPS
         );
+
+        #ifdef __CYGWIN__
+        // Cygwin's cpuinfo doesn't use a blank line to separate each processor
+        if (proc.length > 0)
+        {
+            uint64_t idx = ffStrbufToUInt(&proc, 0);
+
+            if (idx > 0)
+                // The second processor is found, time to stop
+                break;
+
+            ffStrbufClear(&proc);
+        }
+        #endif
     }
 
     return NULL;
