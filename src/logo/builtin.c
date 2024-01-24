@@ -1073,6 +1073,17 @@ static const FFlogo C[] = {
         .colorKeys = FF_COLOR_FG_MAGENTA,
         .colorTitle = FF_COLOR_FG_MAGENTA,
     },
+    // Cygwin
+    {
+        .names = {"cygwin"},
+        .lines = FASTFETCH_DATATEXT_LOGO_CYGWIN,
+        .colors = {
+            FF_COLOR_FG_LIGHT_BLACK,
+            FF_COLOR_FG_256 "46",
+        },
+        .colorKeys = FF_COLOR_FG_256 "46",
+        .colorTitle = FF_COLOR_FG_LIGHT_BLACK,
+    },
     // LAST
     {},
 };
