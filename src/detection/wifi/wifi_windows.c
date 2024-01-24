@@ -5,6 +5,21 @@
 #include <windows.h>
 #include <wlanapi.h>
 
+#ifdef __CYGWIN__
+    #define dot11_phy_type_vht   (8)
+    #define dot11_phy_type_dmg   (9)
+    #define dot11_phy_type_he    (10)
+    #define dot11_phy_type_eht   (11)
+#endif
+
+#ifndef DOT11_AUTH_ALGO_WPA3
+#define DOT11_AUTH_ALGO_WPA3     (8)
+#endif
+
+#ifndef DOT11_AUTH_ALGO_WPA3_SAE
+#define DOT11_AUTH_ALGO_WPA3_SAE (9)
+#endif
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
 
