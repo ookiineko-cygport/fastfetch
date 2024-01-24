@@ -13,7 +13,7 @@
 
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <net/if_dl.h>
-#else
+#elif !defined(__CYGWIN__)
 #include <netpacket/packet.h>
 #endif
 
@@ -115,7 +115,7 @@ const char* ffDetectLocalIps(const FFLocalIpOptions* options, FFlist* results)
                         ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5]);
             addNewIp(results, ifa->ifa_name, addressBuffer, -1, isDefaultRoute);
         }
-        #else
+        #elif !defined(__CYGWIN__)
         else if (ifa->ifa_addr->sa_family == AF_PACKET)
         {
             if (!(options->showType & FF_LOCALIP_TYPE_MAC_BIT))
