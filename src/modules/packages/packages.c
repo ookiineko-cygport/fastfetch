@@ -4,7 +4,7 @@
 #include "modules/packages/packages.h"
 #include "util/stringUtils.h"
 
-#define FF_PACKAGES_NUM_FORMAT_ARGS 25
+#define FF_PACKAGES_NUM_FORMAT_ARGS 26
 
 void ffPrintPackages(FFPackagesOptions* options)
 {
@@ -42,6 +42,11 @@ void ffPrintPackages(FFPackagesOptions* options)
             if((all -= counts.pacman) > 0)
                 printf(", ");
         };
+
+        if(counts.setup_exe > 0)
+        {
+            printf("%u (setup.exe)", counts.setup_exe);
+        }
 
         FF_PRINT_PACKAGE(dpkg)
         FF_PRINT_PACKAGE(rpm)
@@ -91,6 +96,7 @@ void ffPrintPackages(FFPackagesOptions* options)
             {FF_FORMAT_ARG_TYPE_UINT, &counts.brewCask},
             {FF_FORMAT_ARG_TYPE_UINT, &counts.macports},
             {FF_FORMAT_ARG_TYPE_UINT, &counts.scoop},
+            {FF_FORMAT_ARG_TYPE_UINT, &counts.setup_exe},
             {FF_FORMAT_ARG_TYPE_UINT, &counts.choco},
             {FF_FORMAT_ARG_TYPE_UINT, &counts.pkgtool},
             {FF_FORMAT_ARG_TYPE_UINT, &counts.paludis},
@@ -195,6 +201,7 @@ void ffGeneratePackagesJsonResult(FF_MAYBE_UNUSED FFPackagesOptions* options, yy
     FF_APPEND_PACKAGE_COUNT(macports)
     FF_APPEND_PACKAGE_COUNT(rpm)
     FF_APPEND_PACKAGE_COUNT(scoop)
+    FF_APPEND_PACKAGE_COUNT(setup_exe)
     FF_APPEND_PACKAGE_COUNT(snap)
     FF_APPEND_PACKAGE_COUNT(winget)
     FF_APPEND_PACKAGE_COUNT(xbps)
@@ -204,7 +211,7 @@ void ffGeneratePackagesJsonResult(FF_MAYBE_UNUSED FFPackagesOptions* options, yy
 
 void ffPrintPackagesHelpFormat(void)
 {
-    ffPrintModuleFormatHelp(FF_PACKAGES_MODULE_NAME, "{2} (pacman){?3}[{3}]{?}, {4} (dpkg), {5} (rpm), {6} (emerge), {7} (eopkg), {8} (xbps), {9} (nix-system), {10} (nix-user), {11} (nix-default), {12} (apk), {13} (pkg), {14} (flatpak-system), {15} (flatpack-user), {16} (snap), {17} (brew), {18} (brew-cask), {19} (MacPorts), {20} (scoop), {21} (choco), {22} (pkgtool), {23} (paludis), {24} (winget), {25} (opkg)", FF_PACKAGES_NUM_FORMAT_ARGS, (const char* []) {
+    ffPrintModuleFormatHelp(FF_PACKAGES_MODULE_NAME, "{2} (pacman){?3}[{3}]{?}, {4} (dpkg), {5} (rpm), {6} (emerge), {7} (eopkg), {8} (xbps), {9} (nix-system), {10} (nix-user), {11} (nix-default), {12} (apk), {13} (pkg), {14} (flatpak-system), {15} (flatpack-user), {16} (snap), {17} (brew), {18} (brew-cask), {19} (MacPorts), {20} (scoop), {21} (setup.exe), {22} (choco), {23} (pkgtool), {24} (paludis), {25} (winget), {26} (opkg)", FF_PACKAGES_NUM_FORMAT_ARGS, (const char* []) {
         "Number of all packages",
         "Number of pacman packages",
         "Pacman branch on manjaro",
@@ -225,6 +232,7 @@ void ffPrintPackagesHelpFormat(void)
         "Number of brew-cask packages",
         "Number of macports packages",
         "Number of scoop packages",
+        "Number of setup.exe packages",
         "Number of choco packages",
         "Number of pkgtool packages",
         "Number of paludis packages",

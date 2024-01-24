@@ -268,6 +268,7 @@ static void getPackageCounts(FFstrbuf* baseDir, FFPackagesResult* packageCounts)
     packageCounts->pacman += getNumElements(baseDir, "/var/lib/pacman/local", DT_DIR);
     packageCounts->pkgtool += getNumElements(baseDir, "/var/log/packages", DT_REG);
     packageCounts->rpm += getSQLite3Int(baseDir, "/var/lib/rpm/rpmdb.sqlite", "SELECT count(*) FROM Packages");
+    packageCounts->setup_exe += getNumStrings(baseDir, "/etc/setup/installed.db", "\n");
     packageCounts->snap += getSnap(baseDir);
     packageCounts->xbps += getXBPS(baseDir, "/var/db/xbps");
     packageCounts->brewCask += getNumElements(baseDir, "/home/linuxbrew/.linuxbrew/Caskroom", DT_DIR);
@@ -279,6 +280,12 @@ static void getPackageCounts(FFstrbuf* baseDir, FFPackagesResult* packageCounts)
 static void getPackageCountsRegular(FFstrbuf* baseDir, FFPackagesResult* packageCounts)
 {
     getPackageCounts(baseDir, packageCounts);
+
+    if (packageCounts->setup_exe > 0)
+    {
+        // The first line in the installed.db is an entry for itself, not a package
+        packageCounts->setup_exe--;
+    }
 
     uint32_t baseDirLength = baseDir->length;
     ffStrbufAppendS(baseDir, FASTFETCH_TARGET_DIR_ETC "/pacman-mirrors.conf");

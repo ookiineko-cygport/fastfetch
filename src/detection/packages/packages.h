@@ -24,6 +24,7 @@ typedef struct FFPackagesResult
     uint32_t macports;
     uint32_t rpm;
     uint32_t scoop;
+    uint32_t setup_exe;
     uint32_t snap;
     uint32_t winget;
     uint32_t xbps;
