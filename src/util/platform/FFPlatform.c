@@ -31,6 +31,8 @@ void ffPlatformInit(FFPlatform* platform)
             ffStrbufAppendS(&platform->systemName, "Darwin");
         #elif defined(_WIN32)
             ffStrbufAppendS(&platform->systemName, "Windows_NT");
+        #elif defined(__CYGWIN__)
+            ffStrbufAppendS(&platform->systemName, "Cygwin");
         #else
             ffStrbufAppendS(&platform->systemName, "Unknown");
         #endif
