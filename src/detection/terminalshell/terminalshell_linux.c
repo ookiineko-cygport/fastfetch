@@ -29,7 +29,7 @@ static void getProcessInformation(pid_t pid, FFstrbuf* processName, FFstrbuf* ex
     assert(processName->length > 0);
     ffStrbufClear(exe);
 
-    #ifdef __linux__
+    #if defined(__linux__) || defined(__CYGWIN__)
 
     char filePath[64];
     snprintf(filePath, sizeof(filePath), "/proc/%d/cmdline", (int)pid);
@@ -126,7 +126,7 @@ static const char* getProcessNameAndPpid(pid_t pid, char* name, pid_t* ppid, int
     if (pid <= 0)
         return "Invalid pid";
 
-    #ifdef __linux__
+    #if defined(__linux__) || defined(__CYGWIN__)
 
     char statFilePath[64];
     snprintf(statFilePath, sizeof(statFilePath), "/proc/%d/stat", (int)pid);
@@ -393,7 +393,7 @@ static void getTerminalFromEnv(FFTerminalResult* result)
     }
     #endif
 
-    #if defined(__linux__) || defined(__FreeBSD__)
+    #if defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
     //Konsole
     else if(
         getenv("KONSOLE_VERSION") != NULL
@@ -486,7 +486,7 @@ static void setTerminalInfoDetails(FFTerminalResult* result)
     else if(ffStrbufEqualS(&result->processName, "com.termux"))
         ffStrbufInitStatic(&result->prettyName, "Termux");
 
-    #elif defined(__linux__) || defined(__FreeBSD__)
+    #elif defined(__linux__) || defined(__FreeBSD__) || defined(__CYGWIN__)
 
     else if(ffStrbufStartsWithS(&result->processName, "gnome-terminal"))
         ffStrbufInitStatic(&result->prettyName, "GNOME Terminal");
